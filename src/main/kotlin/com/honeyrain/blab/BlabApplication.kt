@@ -19,32 +19,66 @@ fun main(args: Array<String>) {
 
 @RestController
 class BlabController(val service: BlabService) {
-	@GetMapping("/")
+	@GetMapping("/blab")
 	fun index(): List<Blab> = service.findAll()
 
-	@GetMapping("/{id}")
-	fun index(@PathVariable id: String): List<Blab> =
+	@GetMapping("/blab/{id}")
+	fun index(@PathVariable id: String): Optional<Blab> =
 		service.findById(id)
 
-	@PostMapping("/")
+	@PostMapping("/blab")
 	fun post(@RequestBody blab: Blab) {
 		service.save(blab)
 	}
 }
 
+@RestController
+class UserController(val service: UserService) {
+	@GetMapping("/user")
+	fun index(): List<User> = service.findAll()
+
+	@GetMapping("/user/{id}")
+	fun index(@PathVariable id: String): Optional<User> {
+		return service.findById(id)
+	}
+
+	@PostMapping("/user")
+	fun post(@RequestBody user: User) {
+		service.save(user)
+	}
+}
+
 interface BlabRepository : CrudRepository<Blab, String>
+interface UserRepository : CrudRepository<User, String>
 
 @Table("BLABS")
 data class Blab(@Id var id: String?, val title: String, val userId: String)
+
+@Table("USERS")
+data class User(@Id var id: String?, val username: String)
 
 @Service
 class BlabService(val db: BlabRepository) {
 	fun findAll(): List<Blab> = db.findAll().toList()
 
-	fun findById(id: String): List<Blab> = db.findById(id).toList()
+	fun findById(id: String): Optional<Blab> = db.findById(id)
 
 	fun save(blab: Blab) {
 		db.save(blab)
+	}
+
+	fun <T : Any> Optional<out T>.toList(): List<T> =
+		if (isPresent) listOf(get()) else emptyList()
+}
+
+@Service
+class UserService(val db: UserRepository) {
+	fun findAll(): List<User> = db.findAll().toList()
+
+	fun findById(id: String): Optional<User> = db.findById(id)
+
+	fun save(user: User) {
+		db.save(user)
 	}
 
 	fun <T : Any> Optional<out T>.toList(): List<T> =

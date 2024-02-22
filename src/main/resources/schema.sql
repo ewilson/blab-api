@@ -3,3 +3,8 @@ CREATE TABLE IF NOT EXISTS blabs (
     title   VARCHAR      NOT NULL,
     user_id VARCHAR      NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    id          VARCHAR(60)  DEFAULT RANDOM_UUID() PRIMARY KEY,
+    username    VARCHAR      NOT NULL
+);
