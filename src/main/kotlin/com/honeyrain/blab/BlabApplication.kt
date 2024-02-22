@@ -18,33 +18,33 @@ fun main(args: Array<String>) {
 }
 
 @RestController
-class MessageController(val service: MessageService) {
+class BlabController(val service: BlabService) {
 	@GetMapping("/")
-	fun index(): List<Message> = service.findMessages()
+	fun index(): List<Blab> = service.findAll()
 
 	@GetMapping("/{id}")
-	fun index(@PathVariable id: String): List<Message> =
-		service.findMessageById(id)
+	fun index(@PathVariable id: String): List<Blab> =
+		service.findById(id)
 
 	@PostMapping("/")
-	fun post(@RequestBody message: Message) {
-		service.save(message)
+	fun post(@RequestBody blab: Blab) {
+		service.save(blab)
 	}
 }
 
-interface MessageRepository : CrudRepository<Message, String>
+interface BlabRepository : CrudRepository<Blab, String>
 
-@Table("MESSAGES")
-data class Message(@Id var id: String?, val text: String)
+@Table("BLABS")
+data class Blab(@Id var id: String?, val title: String)
 
 @Service
-class MessageService(val db: MessageRepository) {
-	fun findMessages(): List<Message> = db.findAll().toList()
+class BlabService(val db: BlabRepository) {
+	fun findAll(): List<Blab> = db.findAll().toList()
 
-	fun findMessageById(id: String): List<Message> = db.findById(id).toList()
+	fun findById(id: String): List<Blab> = db.findById(id).toList()
 
-	fun save(message: Message) {
-		db.save(message)
+	fun save(blab: Blab) {
+		db.save(blab)
 	}
 
 	fun <T : Any> Optional<out T>.toList(): List<T> =

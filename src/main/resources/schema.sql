@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE IF NOT EXISTS blabs (
     id      VARCHAR(60)  DEFAULT RANDOM_UUID() PRIMARY KEY,
-    text    VARCHAR      NOT NULL
+    title   VARCHAR      NOT NULL
 );
