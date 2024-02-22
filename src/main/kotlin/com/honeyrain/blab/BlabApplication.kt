@@ -35,7 +35,7 @@ class BlabController(val service: BlabService) {
 interface BlabRepository : CrudRepository<Blab, String>
 
 @Table("BLABS")
-data class Blab(@Id var id: String?, val title: String)
+data class Blab(@Id var id: String?, val title: String, val userId: String)
 
 @Service
 class BlabService(val db: BlabRepository) {
