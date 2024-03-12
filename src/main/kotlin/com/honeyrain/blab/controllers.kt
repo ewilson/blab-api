@@ -3,9 +3,11 @@ package com.honeyrain.blab
 import org.slf4j.LoggerFactory
 import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.IanaLinkRelations
 import org.springframework.hateoas.server.RepresentationModelAssembler
 import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.*
 
@@ -15,24 +17,26 @@ class BlabController(val service: BlabService, val assembler: BlabModelAssembler
     @GetMapping("/blab")
     fun all(): CollectionModel<EntityModel<Blab>> {
         val blabs = service.findAll().stream().map(assembler::toModel).toList()
-        return CollectionModel.of(blabs,
-                linkTo<BlabController> { all() }.withSelfRel(),
-        )
+        return CollectionModel.of(blabs, linkTo<BlabController> { all() }.withSelfRel())
     }
 
     @GetMapping("/blab/{id}")
     fun one(@PathVariable id: String): EntityModel<Blab> {
         val blab = service.findById(id).orElseThrow { ObjectNotFoundException(id) }
-        return assembler.toModel(blab)    }
+        return assembler.toModel(blab)
+    }
 
     @DeleteMapping("/blab/{id}")
-    fun delete(@PathVariable id: String) =
-            service.deleteById(id)
+    fun delete(@PathVariable id: String): ResponseEntity<Any> {
+        service.deleteById(id)
+        return ResponseEntity.noContent().build()
+    }
 
     @PostMapping("/blab")
-    fun post(@RequestBody blab: Blab): EntityModel<Blab> {
+    fun post(@RequestBody blab: Blab): ResponseEntity<EntityModel<Blab>> {
         service.save(blab)
-        return assembler.toModel(blab)
+        val entityModel = assembler.toModel(blab)
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
     }
 }
 
@@ -46,21 +50,22 @@ class UserController(val service: UserService, val assembler: UserModelAssembler
         return CollectionModel.of(users, linkTo<UserController> { all() }.withSelfRel())
     }
 
-
     @GetMapping("/user/{id}")
     fun one(@PathVariable id: String): EntityModel<User> {
         val user = service.findById(id).orElseThrow { ObjectNotFoundException(id) }
         return assembler.toModel(user)
     }
     @DeleteMapping("/user/{id}")
-    fun delete(@PathVariable id: String) {
-        return service.deleteById(id)
+    fun delete(@PathVariable id: String): ResponseEntity<Any> {
+        service.deleteById(id)
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/user")
-    fun post(@RequestBody user: User): EntityModel<User> {
+    fun post(@RequestBody user: User): ResponseEntity<EntityModel<User>> {
         service.save(user)
-        return assembler.toModel(user)
+        val entityModel = assembler.toModel(user)
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
     }
 }
 
