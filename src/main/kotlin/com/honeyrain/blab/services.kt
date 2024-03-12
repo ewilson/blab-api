@@ -11,6 +11,8 @@ class BlabService(val db: BlabRepository) {
 
     fun findById(id: String): Optional<Blab> = db.findById(id)
 
+    fun deleteById(id: String) = db.deleteById(id)
+
     fun save(blab: Blab) {
         if (blab.createdTime == null) {
             blab.createdTime = LocalDateTime.now();
@@ -27,6 +29,8 @@ class UserService(val db: UserRepository) {
     fun findAll(): List<User> = db.findAll().toList()
 
     fun findById(id: String): Optional<User> = db.findById(id)
+
+    fun deleteById(id: String) = db.deleteById(id)
 
     fun save(user: User) {
         db.save(user)
