@@ -2,6 +2,7 @@ package com.honeyrain.blab
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -11,6 +12,9 @@ class BlabService(val db: BlabRepository) {
     fun findById(id: String): Optional<Blab> = db.findById(id)
 
     fun save(blab: Blab) {
+        if (blab.createdTime == null) {
+            blab.createdTime = LocalDateTime.now();
+        }
         db.save(blab)
     }
 
