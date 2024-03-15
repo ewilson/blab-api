@@ -27,7 +27,7 @@ class Config {
 			val users = userService.findAll()
 			if (users.isEmpty()) {
 				log.info("Empty DB, adding some data")
-				val user = User(id = null, username = "the system")
+				val user = User(id = null, username = "the system", name = null, bio = null)
 				userService.save(user)
 				log.info("Preloading user {}", user.id)
 				val blab = Blab(id = null, title = "test blab", userId = user.id!!, createdTime = LocalDateTime.now())

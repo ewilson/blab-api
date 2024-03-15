@@ -67,6 +67,20 @@ class UserController(val service: UserService, val assembler: UserModelAssembler
         val entityModel = assembler.toModel(user)
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
     }
+
+    @PutMapping("/user")
+    fun put(@RequestBody user: User): ResponseEntity<EntityModel<User>> {
+        if (user.id == null) {
+            throw ObjectNotFoundException(user.toString())
+        } else {
+            val existingUser = service.findById(user.id!!).orElseThrow { ObjectNotFoundException(user.id!!) }
+            existingUser.bio = user.bio
+            existingUser.name = user.name
+        }
+        val entityModel = assembler.toModel(user)
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
+    }
+
 }
 
 @Component
