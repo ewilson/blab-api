@@ -1,6 +1,7 @@
 package com.honeyrain.blab
 
 import org.slf4j.LoggerFactory
+import org.springdoc.core.models.GroupedOpenApi
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -37,6 +38,18 @@ class Config {
 				log.info("leave it alone, found {} users", users.size)
 			}
 		}
+	}
+}
+
+@Configuration
+class SwaggerConfig {
+
+	@Bean
+	fun publicApi(): GroupedOpenApi {
+		return GroupedOpenApi.builder()
+			.group("public-apis")
+			.pathsToMatch("/**")
+			.build()
 	}
 }
 
