@@ -75,7 +75,7 @@ class UserController(val service: UserService, val assembler: UserModelAssembler
         } else {
             val existingUser = service.findById(user.id!!).orElseThrow { ObjectNotFoundException(user.id!!) }
             existingUser.bio = user.bio
-            existingUser.name = user.name
+            existingUser.fullName = user.fullName
         }
         val entityModel = assembler.toModel(user)
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
